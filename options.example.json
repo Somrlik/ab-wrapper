@@ -1,0 +1,23 @@
+{
+    "_defaults": {
+        "time": 10,
+        "count": 100,
+        "clients": [
+            5,
+            50,
+            100
+        ],
+        "auth": "user:password",
+        "keep-alive": true
+    },
+    "homepage": {
+        "url": "https://your-homepage.net/"
+    },
+    "category-guitars": {
+        "url": "https://your-homepage.net/static-resource",
+        "fixed-length": true
+    },
+    "product-hohner": {
+        "url": "https://your-homepage.net/dynamic-content"
+    },
+}
