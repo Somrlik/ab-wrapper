@@ -11,13 +11,17 @@
         "keep-alive": true
     },
     "homepage": {
+        "time": 100,
+        "count": 200,
         "url": "https://your-homepage.net/"
     },
-    "category-guitars": {
-        "url": "https://your-homepage.net/static-resource",
-        "fixed-length": true
+    "static-resource": {
+        "fixed-length": true,
+        "url": "https://your-homepage.net/static-resource"
     },
-    "product-hohner": {
-        "url": "https://your-homepage.net/dynamic-content"
-    },
+    "api-resource": {
+        "url": "https://your-homepage.net/api/get",
+        "clients": 500,
+        "auth": "api-user:pa$$w0rd"
+    }
 }

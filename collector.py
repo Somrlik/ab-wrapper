@@ -3,19 +3,21 @@ import shutil
 import json
 import time
 
+from typing import Dict
+
 
 class Collector:
 
-    OUTPUT_DIRECTORY = os.path.join(os.path.dirname(__file__), 'reports', str(int(time.time())))
+    OUTPUT_DIRECTORY: str = os.path.join(os.path.dirname(__file__), 'reports', str(int(time.time())))
 
-    data = {}
+    data: Dict = {}
 
     def __init__(self):
         if os.path.isdir(self.OUTPUT_DIRECTORY):
             shutil.rmtree(self.OUTPUT_DIRECTORY)
         os.makedirs(self.OUTPUT_DIRECTORY)
 
-    def collect(self, key, data):
+    def collect(self, key: str, data: Dict) -> None:
         self.data[key] = data
 
     def write_report(self):

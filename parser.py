@@ -1,5 +1,4 @@
 import csv
-import os
 from typing import Dict, Any
 
 
@@ -7,9 +6,9 @@ class Parser:
     LAST_CHECKED_AB_REVISION = 1826891
 
     @staticmethod
-    def parse_ab_result(string: str):
+    def parse_ab_result(string: str) -> Dict:
         if not string:
-            return
+            return {}
 
         def right_side_parser(x):
             return str(x.split(':')[1].strip())
@@ -21,11 +20,11 @@ class Parser:
             split = right_side_parser(x).split(' ')
             split = [x for x in split if x]
             return {
-                'min':  split[0],
-                'mean': split[1],
-                'std':  split[2],
-                'med':  split[3],
-                'max':  split[4],
+                'min':  float(split[0]),
+                'mean': float(split[1]),
+                'std':  float(split[2]),
+                'med':  float(split[3]),
+                'max':  float(split[4]),
             }
 
         rules: Dict[str, Dict[str, Any]] = {
@@ -38,7 +37,7 @@ class Parser:
                 'callback': lambda x: right_side_parser(x),
             },
             'Concurrency Level': {
-                'key': 'concurrency',
+                'key': 'clients',
                 'callback': lambda x: int(right_side_parser(x)),
             },
             'Time taken for tests': {
@@ -51,6 +50,10 @@ class Parser:
             },
             'Failed requests': {
                 'key': 'failed_requests',
+                'callback': lambda x: int(right_side_parser(x)),
+            },
+            'Non-2xx responses': {
+                'key': 'non-2xx-responses',
                 'callback': lambda x: int(right_side_parser(x)),
             },
             'Total transferred': {
@@ -102,9 +105,9 @@ class Parser:
         return data
 
     @staticmethod
-    def parse_timing_csv(file):
+    def parse_timing_csv(file) -> Dict:
         if not file:
-            return
+            return {}
 
         data = {}
 
@@ -114,8 +117,7 @@ class Parser:
                 for row in reader:
                     if 'Percentage' in row['percentage']:
                         continue
-                    data[row['percentage']] = row['time']
-            os.unlink(file)
+                    data[int(row['percentage'])] = float(row['time'])
         except IOError:
             print('Failed to open CSV file for reading.')
 

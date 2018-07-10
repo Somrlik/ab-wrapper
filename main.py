@@ -5,17 +5,21 @@ from parser import Parser
 from collector import Collector
 from exit_codes import EXIT_ERROR, EXIT_SUCCESS
 
-config = Config()
-parser = Parser()
-collector = Collector()
+if __name__ == '__main__':
+    config = Config()
+    parser = Parser()
+    collector = Collector()
 
-runner = Runner(config, parser, collector)
+    runner = Runner(config, parser, collector)
 
-#try:
-runner.run()
+    # noinspection PyBroadException
+    try:
+        runner.run()
 
-#except TypeError:
-#    print('Caught an exception in main thread!')
-#    sys.exit(EXIT_ERROR)
+    except Exception:
+        print('Caught an exception in main thread!')
+        print('Trying to save anyways...')
+        collector.write_report()
+        sys.exit(EXIT_ERROR)
 
-sys.exit(EXIT_SUCCESS)
+    sys.exit(EXIT_SUCCESS)

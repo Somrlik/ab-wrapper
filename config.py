@@ -7,7 +7,7 @@ from exit_codes import EXIT_CONFIG_DOES_NOT_EXIST, EXIT_FAILED_TO_PARSE_CONFIG
 
 class Config:
 
-    OPTIONS_FILE = 'options.json'
+    OPTIONS_FILE: str = 'options.json'
 
     DEFAULTS_KEY: str = '_defaults'
 
@@ -25,16 +25,21 @@ class Config:
         try:
             with open(self.OPTIONS_FILE) as f:
                 data = json.load(f)
+
                 if self.DEFAULTS_KEY in data:
                     self.defaults = {**self.defaults, **data[self.DEFAULTS_KEY]}
+
                 for key, one_location in data.items():
                     if key == self.DEFAULTS_KEY:
                         continue
                     self.config[key] = {**self.defaults, **one_location}
+
                 self.check_config()
+
         except ValueError:
             print('Failed to parse config file!')
             sys.exit(EXIT_FAILED_TO_PARSE_CONFIG)
+
         except FileNotFoundError:
             print('Did not find config.json. Does it exist?')
             sys.exit(EXIT_CONFIG_DOES_NOT_EXIST)
@@ -42,6 +47,7 @@ class Config:
     def check_config(self) -> None:
         config_copy = self.config.copy()
         for config_key, one_config in config_copy.items():
+
             required_keys = ('time', 'count', 'clients', 'keep-alive', 'url')
             if not all(k in one_config for k in required_keys):
                 print('The config ' + config_key + ' is missing a required key.')

@@ -1,16 +1,16 @@
+import os
 import subprocess
-import sys, os
+import sys
 import threading
-
-from exit_codes import EXIT_CONFIG_DOES_NOT_EXIST
 from typing import Dict, Any
-from config import Config
-from parser import Parser
+
 from collector import Collector
+from config import Config
+from exit_codes import EXIT_CONFIG_DOES_NOT_EXIST
+from parser import Parser
 
 
 class Runner:
-
     CSV_DATA_FILE = 'data.csv'
 
     config: Dict[str, Dict[str, Any]] = None
@@ -49,11 +49,11 @@ class Runner:
         """"
             Executes a command and yields its output by lines
         """
-        popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, universal_newlines=True)
-        for stdout_line in iter(popen.stdout.readline, ""):
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, universal_newlines=True)
+        for stdout_line in iter(process.stdout.readline, ""):
             yield stdout_line
-        popen.stdout.close()
-        return_code = popen.wait()
+        process.stdout.close()
+        return_code = process.wait()
         if return_code:
             raise subprocess.CalledProcessError(return_code, cmd)
 
@@ -100,11 +100,11 @@ class Runner:
             progress_watcher.stop()
             print("Cancelling run!")
 
+        os.unlink(self.CSV_DATA_FILE)
         self.collector.write_report()
 
 
 class ProgressWatcher(threading.Thread):
-
     TIMEOUT: float = 0.01
 
     def __init__(self, time: int):
