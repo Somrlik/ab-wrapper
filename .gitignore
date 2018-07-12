@@ -280,3 +280,5 @@ options.json
 data.csv
 reports/
 .idea/
+spreadsheet.xlsx
+.~*
