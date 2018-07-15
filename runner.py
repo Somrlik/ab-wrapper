@@ -2,8 +2,8 @@ import os
 import subprocess
 import sys
 import threading
-from typing import Dict, Any
 
+from typing import Dict, Any
 from collector import Collector
 from config import Config
 from exit_codes import EXIT_CONFIG_DOES_NOT_EXIST
@@ -66,12 +66,18 @@ class Runner:
         seconds = 0
         for key, config in self.config.items():
             seconds += config['time']
+        return self.get_human_time(seconds)
+
+    @staticmethod
+    def get_human_time(seconds) -> (int, int, int):
         m, s = divmod(seconds, 60)
         h, m = divmod(m, 60)
         return h, m, s
 
     def run(self):
         print('This process will take about %02d:%02d:%02d.' % (self.make_time_estimate()))
+
+        sum(int(v['time']) for v in self.config.values())
 
         progress_watcher: ProgressWatcher = None
         try:
@@ -109,7 +115,7 @@ class ProgressWatcher(threading.Thread):
 
     def __init__(self, time: int):
         super().__init__()
-        self.time = time
+        self.time = time * 100
         self.cv = threading.Condition()
         self.stopped = False
         self.cancelled = False
@@ -119,9 +125,9 @@ class ProgressWatcher(threading.Thread):
         self.cv.acquire()
         while True:
             try:
-                print('\rAbout %.2f seconds remaining...' % self.time, end='\r')
+                print('\rAbout %.2f seconds remaining...' % (self.time / 100), end='\r')
                 self.cv.wait(timeout=self.TIMEOUT)
-                self.time -= self.TIMEOUT
+                self.time -= 1
                 if self.stopped:
                     try:
                         return False

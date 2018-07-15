@@ -1,4 +1,5 @@
 import sys
+
 from runner import Runner
 from config import Config
 from parser import Parser

@@ -4,6 +4,7 @@ import json
 import time
 
 from typing import Dict
+from generate_excel import ExcelGenerator
 
 
 class Collector:
@@ -33,4 +34,9 @@ class Collector:
                 json.dump(self.data, f, indent=4)
         except IOError:
             print('Failed to save data.json!!!')
+
+        ExcelGenerator().write_to_excel()
+
+        print('Finished writing excel data')
         print('Finished writing report!')
+
