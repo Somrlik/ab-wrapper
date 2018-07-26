@@ -100,7 +100,8 @@ class ExcelGenerator:
             mapping[str(i) + ' percentile'] = 'percentages.' + str(i)
 
         pairs, i = 0, 0
-        for timestamp, data in one_entry.items():
+        for timestamp in sorted(one_entry.keys()):
+            data = one_entry[timestamp]
             i = offset
 
             for description, key in mapping.items():
@@ -198,8 +199,11 @@ class ExcelGenerator:
                 dir_name = entry.name
                 if not dir_name.startswith('.') and dir_name.isdigit() and entry.is_dir():
                     data_file = os.path.join(directory, dir_name, 'data.json')
-                    with open(data_file, 'r') as f:
-                        self.DATA[int(dir_name)] = json.load(f)
+                    try:
+                        with open(data_file, 'r') as f:
+                            self.DATA[int(dir_name)] = json.load(f)
+                    except FileNotFoundError:
+                        continue
 
         self.write_all_data(self.excel_book)
 
